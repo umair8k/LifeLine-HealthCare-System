@@ -8,6 +8,7 @@ public class LifeLineHealthCareSystemApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(LifeLineHealthCareSystemApplication.class, args);
-	}
 
+
+}
 }

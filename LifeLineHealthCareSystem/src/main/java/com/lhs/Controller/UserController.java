@@ -18,7 +18,7 @@ import com.lhs.Models.Role;
 import com.lhs.Models.User;
 import com.lhs.Models.UserRole;
 import com.lhs.Service.UserService;
-@CrossOrigin("*")
+//@CrossOrigin("*")
 @RestController
 @RequestMapping("/user")
 public class UserController {

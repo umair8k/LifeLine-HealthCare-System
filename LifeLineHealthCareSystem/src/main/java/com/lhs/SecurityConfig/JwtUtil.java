@@ -37,7 +37,7 @@ public class JwtUtil {
         return extractExpiration(token).before(new Date());
     }
 
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(UserDetails userDetails) {//this method take userDetails service object in Map and create token by calling the create methtod 
         Map<String, Object> claims = new HashMap<>();
         return createToken(claims, userDetails.getUsername());
     }
@@ -47,11 +47,17 @@ public class JwtUtil {
         return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY).compact();
-    }
+    }/*
+    this createToekn() method call jwt api and it uses a builder pattern and it setting a claims that we have passed in generateToken() 
+    ans its set the subject means the person who is authenticated(taking usernaem in String subject param) and it set the curent system date & timne 
+    ans finnaly signing in with SignatureAlgorithm.HS256 this algo and passing it in Secrete key taken it as a global var ans the compact will end this 
+    */
 
     public Boolean validateToken(String token, UserDetails userDetails) {
     	   final String username = extractUsername(token);
            return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
-       }
+       }/*
+       this checks the username is match with the userDetails username and it also chcks is it expired ans it return boolean 
+       */
    }
    

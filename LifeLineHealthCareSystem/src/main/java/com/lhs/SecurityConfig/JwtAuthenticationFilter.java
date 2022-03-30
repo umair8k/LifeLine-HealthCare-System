@@ -19,7 +19,7 @@ import com.lhs.Service.Impl.UserDetailsServiceImpl;
 
 import io.jsonwebtoken.ExpiredJwtException;
 
-@Component
+@Component// this class will work as a filter, means this class work before request 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 
@@ -33,7 +33,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
 
-        final String requestTokenHeader = request.getHeader("Authorization");
+        final String requestTokenHeader = request.getHeader("Authorization");//(1)token will come here from client, w'll store in requestTokenHeader
         System.out.println(requestTokenHeader);
         String username = null;
         String jwtToken = null;
@@ -41,10 +41,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
             //yes
 
-            jwtToken = requestTokenHeader.substring(7);
+            jwtToken = requestTokenHeader.substring(7);// (2) w'll remove tokn from header by removing bearer 
 
             try {
-                username = this.jwtUtil.extractUsername(jwtToken);
+                username = this.jwtUtil.extractUsername(jwtToken);//(3) extracting username
             } catch (ExpiredJwtException e) {
                 e.printStackTrace();
                 System.out.println("jwt token has expired");
@@ -57,14 +57,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             System.out.println("Invalid token , not start with bearer string");
         }
 
-        //validated
+        //(4) here we have uname and token w'll validate it hare 
+		//validated
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             final UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
             if (this.jwtUtil.validateToken(jwtToken, userDetails)) {
                 //token is valid
 
                 UsernamePasswordAuthenticationToken usernamePasswordAuthentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                usernamePasswordAuthentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                usernamePasswordAuthentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));//(5) here w'll set details 
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthentication);
             }
         }else {

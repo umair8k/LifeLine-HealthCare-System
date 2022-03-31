@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.lhs.Models.Role;
 import com.lhs.Models.User;
@@ -18,6 +19,9 @@ public class LifeLineHealthCareSystemApplication implements CommandLineRunner{
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	public static void main(String[] args) {
 		SpringApplication.run(LifeLineHealthCareSystemApplication.class, args);
@@ -26,21 +30,21 @@ public class LifeLineHealthCareSystemApplication implements CommandLineRunner{
 
 	@Override
 	public void run(String... args) throws Exception{
-	/*-----	System.out.println("execution start");
+	/*	System.out.println("execution start");
 		
 		User user=new User();
 		
-		user.setEmail("Umari123@gmail.com");
-		user.setFirstName("Mohd1");
-		user.setLastName("Umer Faisal1");
+		user.setEmail("user1@gmail.com");
+		user.setFirstName("test");
+		user.setLastName("user");
 		user.setDOB("01-06-1997");
 		user.setPhoneNo("7350957167");
-		user.setPassword("pwd@1234");
-		user.setUsername("umari123");
+		user.setPassword(bCryptPasswordEncoder.encode("user1234"));
+		user.setUsername("tuser1");
 		
 		Role role=new Role();
-		role.setRoleId(58);
-		role.setRoleName("ADMIN");
+		role.setRoleId(11);
+		role.setRoleName("USER");
 		
 		Set<UserRole> userRoleSet=new HashSet<>();
 		UserRole userRole=new UserRole();
@@ -51,8 +55,8 @@ public class LifeLineHealthCareSystemApplication implements CommandLineRunner{
 		User user1=this.userService.createUser(user, userRoleSet);
 		System.out.println(user1.getUsername());
 		
+		*/
 		
-		-----*/
 		
 	}
 }

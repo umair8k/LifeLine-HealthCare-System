@@ -32,63 +32,60 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name="Users")
-@JsonPropertyOrder({ "id", "firstName","lastName","username","email","phoneNo","password","DOB"})
+@JsonPropertyOrder({"id","username","firstName","lastName","email","phoneNo","DOB","password","gender","status"})
 public class User implements UserDetails{
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Integer id;
-	
+
 	@Column(name="first_name")
 	@NotEmpty(message = "Please provide your first name")
 	private String firstName;
-	
+
 	@Column(name="last_name")
 	@NotEmpty(message = "Please provide your last name")
 	private String lastName;
-	
-	
+
+
 	@Column(name="username", nullable=false, unique=true)
 	@Length( max = 15)
 	private String username;
-	
-	
+
+
 	private String password;
-	
+
 	@Column(name="email", nullable=false, unique=true)
 	@Email(message = "Please provide a valid e-mail")
 	@NotEmpty(message = "Please provide an e-mail")
 	private String email;
-	
+
 	private String phoneNo;
-	
+
 	private Boolean status=true;
-	
+
 	private String DOB;
-	
-	
-    @Length( max = 15)
+
+
+	@Length( max = 15)
 	private String gender;
-	 
-	
+
+
 	//user can have many 
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER,mappedBy="user")
 	@JsonIgnore
 	private Set<UserRole> userRole=new HashSet<>();
 
 
-	 @Override
-	    public Collection<? extends GrantedAuthority> getAuthorities() {
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
 
-	        Set<Authority> set = new HashSet<>();
-	        this.userRole.forEach(userRole -> {
-	            set.add(new Authority(userRole.getRole().getRoleName()));
-	        });
-
-
-	        return set;
-	    }
-
+		Set<Authority> set = new HashSet<>();
+		this.userRole.forEach(userRole -> {
+			set.add(new Authority(userRole.getRole().getRoleName()));
+		});
+		return set;
+	}
 
 	@Override
 	public boolean isAccountNonExpired() {
@@ -118,6 +115,6 @@ public class User implements UserDetails{
 	}
 
 
-	
+
 
 }

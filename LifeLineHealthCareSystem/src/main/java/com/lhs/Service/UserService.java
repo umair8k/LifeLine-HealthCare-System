@@ -19,4 +19,6 @@ public interface UserService {
 	
 	//get all users
 	public List<User> gellAllUsers();
+	
+	public void deleteAllUsers();
 }

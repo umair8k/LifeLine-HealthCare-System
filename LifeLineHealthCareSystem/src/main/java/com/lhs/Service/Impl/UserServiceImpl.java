@@ -1,6 +1,7 @@
 package com.lhs.Service.Impl;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 import javax.transaction.Transactional;
@@ -8,11 +9,14 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.lhs.Exceptions.BuisinessException;
 import com.lhs.Models.User;
 import com.lhs.Models.UserRole;
 import com.lhs.Repository.RoleRepository;
 import com.lhs.Repository.UserRepository;
 import com.lhs.Service.UserService;
+
+
 @Transactional
 @Service
 public class UserServiceImpl implements UserService {
@@ -26,33 +30,45 @@ public class UserServiceImpl implements UserService {
 	//creating user
 	@Override
 	public User createUser(User user, Set<UserRole> userRole) throws Exception{
-		
-	User local=this.userRepository.findByUsername(user.getUsername());
+
+		User local=this.userRepository.findByUsername(user.getUsername());
 		if(local!=null) {
-			System.out.println("User already exist!!");
-			throw new Exception("user already present");
+			System.out.println("User already exist with this username!!");
+			throw new Exception("user already present with this username");
 			//create user
-		}else {
+		}
+		else {
 
 			for(UserRole ur: userRole) {
 				roleRepository.save(ur.getRole());//role save
 			}
+
 			user.getUserRole().addAll(userRole);//associating roles to user
 			local=this.userRepository.save(user);
 		}
 		return local;
+
 	}
 
-	
+
 	//getting user by username
 	@Override
 	public User getUser(String username) {
-		
-		return this.userRepository.findByUsername(username);
+		try {
+			
+			return this.userRepository.findByUsername(username);
+			
+		}catch(IllegalArgumentException iae) {
+			throw new BuisinessException("601","Given username is null, please send some username to be serched !!!"+iae.getMessage());
+		}catch(NoSuchElementException nsee) {
+			throw new BuisinessException("602","Given username does not exist in database"+nsee.getMessage());
+		}catch(Exception e) {
+			throw new BuisinessException("603","Something went wrong in service layer while fetching user by username"+e.getMessage());
+		}
 	}
-	
-	
-    //deleting user by id
+
+
+	//deleting user by id
 	@Override
 	public void deleteUser(Integer id) {
 		this.userRepository.deleteById(id);		
@@ -61,15 +77,21 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public List<User> gellAllUsers() {
-		
+
 		return this.userRepository.findAll();
 	}
 
 
 	@Override
 	public void deleteAllUsers() {
+		try {
 		this.userRepository.deleteAll();
-		
+		}catch(IllegalArgumentException iae) {
+			throw new BuisinessException("615","Given id is null, Pleace give id that is in database"+iae.getMessage());
+		}catch(Exception e) {
+			throw new BuisinessException("615","Somthing went wrong in service while deleting users by id"+e.getMessage());
+		}
+
 	}
 
 }

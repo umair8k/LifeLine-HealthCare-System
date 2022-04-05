@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,10 +17,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.lhs.Exceptions.BuisinessException;
+import com.lhs.Exceptions.ControllerException;
 import com.lhs.Models.Role;
 import com.lhs.Models.User;
 import com.lhs.Models.UserRole;
 import com.lhs.Service.UserService;
+
+
 @CrossOrigin("*")
 @RestController
 @RequestMapping("/user")
@@ -31,7 +37,7 @@ public class UserController {
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
 	
 	//create User
-	@PostMapping("/")
+	@PostMapping("/signUp")
 	public User createUser(@RequestBody User user) throws Exception {
 		
 		user.setPassword(this.bCryptPasswordEncoder.encode(user.getPassword()));
@@ -58,13 +64,23 @@ public class UserController {
 	
 	//get user by id
 	@GetMapping("/getUser/{username}")
-	public User getUser(@PathVariable("username")String username) {
-		return this.userService.getUser(username);
+	public ResponseEntity<?> getUser(@PathVariable("username")String username) {
+		try {
+			User user=userService.getUser(username);
+			return new ResponseEntity<User>(user,HttpStatus.OK);	
+		}catch(BuisinessException be) {
+			ControllerException ce=new ControllerException(be.getErrorCode(),be.getErrorMessage());
+			return new ResponseEntity<ControllerException>(ce,HttpStatus.BAD_REQUEST);
+		}catch(Exception e) {
+			ControllerException ce =new ControllerException("610","Somthing went wrong in controller");
+			return new ResponseEntity<ControllerException>(ce,HttpStatus.BAD_REQUEST);
+		}
 	}
 	
 	@DeleteMapping("/deleteUser/{id}")
-	public void deleteUser(@PathVariable("id")Integer id) {
-		this.userService.deleteUser(id);
+	public ResponseEntity<Void> deleteUser(@PathVariable("id")Integer id) {
+		userService.deleteUser(id);
+		return new ResponseEntity<Void>(HttpStatus.ACCEPTED);
 	}
 	
 	

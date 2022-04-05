@@ -2,14 +2,15 @@ package com.lhs.Models;
 
 import org.springframework.security.core.GrantedAuthority;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
+@AllArgsConstructor
+@NoArgsConstructor
 public class Authority implements GrantedAuthority {
 
 	private String authority;
 	
-	public Authority(String authority) {
-		this.authority=authority;
-	}
 
 	@Override
 	public String getAuthority() {

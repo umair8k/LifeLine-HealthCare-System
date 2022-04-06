@@ -2,6 +2,8 @@ package com.lhs.Controller;
 
 import java.security.Principal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,6 +30,8 @@ import com.lhs.Service.Impl.UserDetailsServiceImpl;
 @CrossOrigin("*")
 public class AuthenticationController {
 
+	private static final Logger LOG=LoggerFactory.getLogger(AuthenticationController.class);
+	
 	@Autowired
 	private AuthenticationManager authenticationManager;// authenticate method will use this to authenticate 
 
@@ -39,11 +43,13 @@ public class AuthenticationController {
 
 	@PostMapping("/login")
 	public ResponseEntity<?> generateToken(@RequestBody JwtRequest jwtRequest) throws Exception{
+		LOG.info("Enterd into generateToken method");
 		try {
 
 			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(jwtRequest.getUsername(), jwtRequest.getPassword()));
 
 		}catch(UsernameNotFoundException unfe) {
+			LOG.debug("Unable to login, User Not Found{}",unfe.getMessage());
 			unfe.printStackTrace();
 			throw new Exception("User Not Found");
 		}
@@ -57,13 +63,16 @@ public class AuthenticationController {
 
 
 	private void authenticate(String username, String password) throws Exception {// this method will auth if auth is not sucessfull then is will throegh excep.
+		LOG.info("Ented Into authenticate method");
 		try {
 
 			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));//takinf uname and pass wich we have set in jwtfilter class
 
 		}catch(DisabledException de) {
+			LOG.debug("User Is Diabled due to this {}",de.getMessage());
 			throw new Exception("USER IS Disabled"+de.getMessage());
 		}catch(BadCredentialsException be) {
+			LOG.debug("Invalid Credentials due to this {}",be.getMessage());
 			throw new Exception("Invalid Credentials" +be.getMessage());
 
 		}
@@ -73,7 +82,7 @@ public class AuthenticationController {
 	@GetMapping("/current-user")
 	public User getCurrentUser(Principal principal) {
 		
-		return (User) this.userDetailsService.loadUserByUsername(principal.getName());
+		return (User)userDetailsService.loadUserByUsername(principal.getName());
 		
 	}
 

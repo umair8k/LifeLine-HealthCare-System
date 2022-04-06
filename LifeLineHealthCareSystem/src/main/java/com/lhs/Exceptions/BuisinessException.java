@@ -1,4 +1,4 @@
-package com.lhs.Exceptions;
+ package com.lhs.Exceptions;
 
 import org.springframework.stereotype.Component;
 

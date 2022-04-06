@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +32,8 @@ import com.lhs.Service.UserService;
 @RequestMapping("/user")
 public class UserController {
 	
+	private static final Logger LOG=LoggerFactory.getLogger(UserController.class);
+	
 	@Autowired
 	private UserService userService;
 	
@@ -39,9 +43,10 @@ public class UserController {
 	//create User
 	@PostMapping("/signUp")
 	public User createUser(@RequestBody User user) throws Exception {
+		LOG.info("Enterd into createUser Method");
 		
 		user.setPassword(this.bCryptPasswordEncoder.encode(user.getPassword()));
-		
+		LOG.debug("Encrypted password");
 		Set<UserRole> userRoleSet=new HashSet<>();
 		
 		Role role=new Role();         //default role "User"
@@ -51,7 +56,7 @@ public class UserController {
 		UserRole userRole=new UserRole();
 		userRole.setRole(role);
 		userRole.setUser(user);
-		
+		LOG.debug("Assigned Default role to user to USER");
 		userRoleSet.add(userRole);
 		return this.userService.createUser(user, userRoleSet);
 	}

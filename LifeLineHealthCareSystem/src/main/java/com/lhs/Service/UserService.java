@@ -1,5 +1,6 @@
 package com.lhs.Service;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Set;
 
@@ -21,4 +22,8 @@ public interface UserService {
 	public List<User> gellAllUsers();
 	
 	public void deleteAllUsers();
+	
+	public User updateUser(String username, User user, Principal principal);
+	
+
 }

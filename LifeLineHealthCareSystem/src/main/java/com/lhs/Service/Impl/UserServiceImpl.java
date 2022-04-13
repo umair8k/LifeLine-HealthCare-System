@@ -110,4 +110,10 @@ public class UserServiceImpl implements UserService {
 		return updatedUser;
 	}
 
+	@Override
+	public User getUserByEmail(String email) {
+		
+		return userRepository.findByEmail(email);
+	}
+
 }

@@ -3,12 +3,14 @@ package com.lhs.Controller;
 import java.security.Principal;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lhs.Exceptions.BuisinessException;
@@ -29,7 +32,7 @@ import com.lhs.Models.UserRole;
 import com.lhs.Payload.Request.PasswordRequest;
 import com.lhs.Payload.Request.UpdateUserProfileRequest;
 import com.lhs.Repository.UserRepository;
-import com.lhs.Service.UserService;
+import com.lhs.Service.Impl.UserServiceImpl;
 
 
 @CrossOrigin("*")
@@ -40,7 +43,7 @@ public class UserController {
 	private static final Logger LOG=LoggerFactory.getLogger(UserController.class);
 
 	@Autowired
-	private UserService userService;
+	private UserServiceImpl userService;
 
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -89,16 +92,39 @@ public class UserController {
 			return new ResponseEntity<ControllerException>(ce,HttpStatus.BAD_REQUEST);
 		}
 	}
+	
+	@GetMapping("/phone/{phoneNo}")
+	public User findByPhoneNO(@RequestParam("phoneNo")String phoneNo){
+	       User user=userRepository.getByPhoneNo(phoneNo);
+	       System.out.println(user);
+	       return user;
+	    }
+	
 
 	@DeleteMapping("/deleteUser/{id}")
 	public ResponseEntity<Void> deleteUser(@PathVariable("id")Integer id) {
 		userService.deleteUser(id);
 		return new ResponseEntity<Void>(HttpStatus.ACCEPTED);
 	}
+	
+	@RequestMapping(value ="/email/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> getUserByEmail(@RequestParam(value="email",required=false)String email) {
+		try {
+			User user=userService.getUserByEmail(email);
+			System.out.println(user);
+			return new ResponseEntity<User>(user,HttpStatus.OK);	
+		}catch(BuisinessException be) {
+			ControllerException ce=new ControllerException(be.getErrorCode(),be.getErrorMessage());
+			return new ResponseEntity<ControllerException>(ce,HttpStatus.BAD_REQUEST);
+		}catch(Exception e) {
+			ControllerException ce =new ControllerException("610","Somthing went wrong in controller");
+			return new ResponseEntity<ControllerException>(ce,HttpStatus.BAD_REQUEST);
+		}
+	}
 
 
 	@DeleteMapping("/deleteAll")
-	public void deleteAllUsers() {
+	public void deleteAllUsers() { 
 		this.userService.deleteAllUsers();
 	}
 
@@ -140,6 +166,7 @@ public class UserController {
 		return new ResponseEntity("Success", HttpStatus.OK); 
 		
 	}
+	
 	
 
 }

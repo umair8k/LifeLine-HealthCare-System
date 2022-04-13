@@ -1,6 +1,7 @@
 package com.lhs.Repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import com.lhs.Models.User;
 
@@ -10,4 +11,9 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
 	public void deleteByUsername(String username);
 
+	public User getUserByEmail(String email);
+
+	public User findByEmail(String email);
+
+	public User getByPhoneNo(String phoneNo);
 }

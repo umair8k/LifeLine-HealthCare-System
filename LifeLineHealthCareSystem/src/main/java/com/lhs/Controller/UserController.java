@@ -95,7 +95,7 @@ public class UserController {
 	
 	@GetMapping("/phone/{phoneNo}")
 	public User findByPhoneNO(@RequestParam("phoneNo")String phoneNo){
-	       User user=userRepository.getByPhoneNo(phoneNo);
+	       User user=userRepository.findByPhoneNo(phoneNo);
 	       System.out.println(user);
 	       return user;
 	    }

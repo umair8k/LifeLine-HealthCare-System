@@ -116,4 +116,10 @@ public class UserServiceImpl implements UserService {
 		return userRepository.findByEmail(email);
 	}
 
+	@Override
+	public User getUserByPhoneNO(String phoneNo) {
+		
+		return null;
+	}
+
 }

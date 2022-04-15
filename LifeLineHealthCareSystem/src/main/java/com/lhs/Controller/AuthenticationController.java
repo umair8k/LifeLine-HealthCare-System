@@ -50,18 +50,7 @@ public class AuthenticationController {
 	@Autowired
 	private JwtUtil jwtUtil;
 
-	@Autowired
-	private UserService userService;
-
-	@Autowired
-	private UserRepository userRepository;
-
-	@Autowired
-	private BCryptPasswordEncoder bCryptPasswordEncoder;
 	
-	@Autowired
-	private EmailService emailServcie;
-
 	@PostMapping("/login")
 	public ResponseEntity<?> generateToken(@RequestBody JwtRequest jwtRequest) throws Exception{
 		LOG.info("Enterd into generateToken method");

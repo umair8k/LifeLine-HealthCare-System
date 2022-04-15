@@ -16,7 +16,7 @@ import lombok.Setter;
 public class TwilioConfiguration {
 	
 	private String accountSid="ACf31f6624b86b3fe7ad9f39cf95839e01";
-	private String authToken="b408f9a6a5bead01b9c9e5b4c3d708a2";
+	private String authToken="78e21182ded8b80e8ba41a094c254a20";
 	private String trialNumber="+19896372364";
 
 }

@@ -27,6 +27,8 @@ public interface UserService {
 	public void deleteAllUsers();
 	
 	public User updateUser(String username, User user, Principal principal);
+	 
+	public User getUserByPhoneNO(String phoneNo);
 	
 
 }

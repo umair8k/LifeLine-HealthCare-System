@@ -5,6 +5,8 @@ import java.util.Random;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +18,7 @@ import com.lhs.Models.User;
 import com.lhs.Payload.Request.ForgotPasswordSmsRequest;
 import com.lhs.Repository.UserRepository;
 import com.lhs.Service.SmsSender;
+import com.lhs.Service.UserService;
 
 @RestController
 @RequestMapping("/smsForgot")
@@ -30,6 +33,9 @@ public class ForgotPasswordSmsController {
 	
 	@Autowired
 	private SmsSender smsSender;
+	
+	@Autowired
+	private UserService userService;
 	
 	
 	@PostMapping("/forgot-password")
@@ -67,7 +73,7 @@ public class ForgotPasswordSmsController {
 		System.out.println("phoneNo  "+phoneNo);
 		if(sessionOtp==otp) {
 
-			User user=userRepository.getByPhoneNo(phoneNo);
+			User user=userRepository.findByPhoneNo(phoneNo);
 			if(user==null)
 				session.setAttribute("message","User does not exist with this this email");
 			else
@@ -81,14 +87,20 @@ public class ForgotPasswordSmsController {
 	}
 	
 	@PostMapping("/change-forgot-password")
-	public User changeForgotPassword(@RequestBody ForgotPasswordSmsRequest forgotPwdReq,HttpSession session) {
+	public ResponseEntity<User> changeForgotPassword(@RequestBody ForgotPasswordSmsRequest forgotPwdReq,HttpSession session) {
 		String phoneNo=(String) session.getAttribute("phoneNO");
 		System.out.println("phoneNo  "+phoneNo);
-		User user=userRepository.getByPhoneNo(phoneNo);
+		User user=userService.getUser("umerfaisal1234");
+		System.out.println(user);
 		System.out.println(phoneNo);
 		user.setPassword(bCryptPasswordEncoder.encode(forgotPwdReq.getNewPassword()));
 		userRepository.save(user);
-		return user;
+		if(user==null)
+			return new ResponseEntity("User not found",HttpStatus.BAD_REQUEST);
+			else {
+		System.out.println(user);
+		return  new ResponseEntity(user,HttpStatus.OK);	
+			}
 	}
 
 }

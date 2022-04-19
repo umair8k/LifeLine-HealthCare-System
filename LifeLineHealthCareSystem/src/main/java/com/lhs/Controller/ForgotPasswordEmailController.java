@@ -24,18 +24,6 @@ import com.lhs.Service.Impl.UserDetailsServiceImpl;
 @RestController
 @RequestMapping("/emailForgot")
 public class ForgotPasswordEmailController {
-	
-	@Autowired
-	private AuthenticationManager authenticationManager;// authenticate method will use this to authenticate 
-
-	@Autowired
-	private UserDetailsServiceImpl userDetailsService;
-
-	@Autowired
-	private JwtUtil jwtUtil;
-
-	@Autowired
-	private UserService userService;
 
 	@Autowired
 	private UserRepository userRepository;

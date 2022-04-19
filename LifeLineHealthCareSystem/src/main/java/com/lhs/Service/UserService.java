@@ -29,6 +29,8 @@ public interface UserService {
 	public User updateUser(String username, User user, Principal principal);
 	 
 	public User getUserByPhoneNO(String phoneNo);
+
+	public User findByPhoneNo(String phoneNo);
 	
 
 }

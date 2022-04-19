@@ -69,7 +69,7 @@ public class ForgotPasswordSmsController {
 		
 		Integer sessionOtp=(Integer) session.getAttribute("otp");
 		String phoneNo=(String) session.getAttribute("phoneNo");
-		System.out.println("sessionOTP  "+sessionOtp);
+		System.out.println("sessionOtp  "+sessionOtp);
 		System.out.println("phoneNo  "+phoneNo);
 		if(sessionOtp==otp) {
 
@@ -79,8 +79,7 @@ public class ForgotPasswordSmsController {
 			else
 				return "change pwd";
 					}else {
-						
-			
+
 		}
 		session.setAttribute("message","Wrong OTP !!!");
 		return "";
@@ -88,9 +87,9 @@ public class ForgotPasswordSmsController {
 	
 	@PostMapping("/change-forgot-password")
 	public ResponseEntity<User> changeForgotPassword(@RequestBody ForgotPasswordSmsRequest forgotPwdReq,HttpSession session) {
-		String phoneNo=(String) session.getAttribute("phoneNO");
+		String phoneNo=(String) session.getAttribute("phoneNo");
 		System.out.println("phoneNo  "+phoneNo);
-		User user=userService.getUser("umerfaisal1234");
+		User user=userService.findByPhoneNo(phoneNo);
 		System.out.println(user);
 		System.out.println(phoneNo);
 		user.setPassword(bCryptPasswordEncoder.encode(forgotPwdReq.getNewPassword()));

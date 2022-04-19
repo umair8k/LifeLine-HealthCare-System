@@ -122,4 +122,10 @@ public class UserServiceImpl implements UserService {
 		return null;
 	}
 
+	@Override
+	public User findByPhoneNo(String phoneNo) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

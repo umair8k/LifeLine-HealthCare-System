@@ -19,7 +19,7 @@ import lombok.Setter;
 public class UserRole {
 	
 	@Id
-	@GeneratedValue(strategy =GenerationType.AUTO)
+	@GeneratedValue(generator = "UserRole_gen",strategy = GenerationType.AUTO)
 	private Integer userRoleId;
 	
 	//users

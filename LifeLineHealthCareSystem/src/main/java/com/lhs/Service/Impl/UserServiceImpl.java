@@ -1,12 +1,16 @@
 package com.lhs.Service.Impl;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
 import javax.transaction.Transactional;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.lhs.Exceptions.BuisinessException;
@@ -26,6 +30,9 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private RoleRepository roleRepository;
+	
+	@Autowired
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	//creating user
 	@Override
@@ -47,9 +54,7 @@ public class UserServiceImpl implements UserService {
 			local=this.userRepository.save(user);
 		}
 		return local;
-
 	}
-
 
 	//getting user by username
 	@Override
@@ -67,20 +72,17 @@ public class UserServiceImpl implements UserService {
 		}
 	}
 
-
 	//deleting user by id
 	@Override
 	public void deleteUser(Integer id) {
 		this.userRepository.deleteById(id);		
 	}
 
-
 	@Override
 	public List<User> gellAllUsers() {
 
 		return this.userRepository.findAll();
 	}
-
 
 	@Override
 	public void deleteAllUsers() {
@@ -92,6 +94,38 @@ public class UserServiceImpl implements UserService {
 			throw new BuisinessException("615","Somthing went wrong in service while deleting users by id"+e.getMessage());
 		}
 
+	}
+	@Override
+	public User updateUser(String username, User user, Principal principal){
+		
+		String LoggedInUser=principal.getName();
+		User currentUser=this.userRepository.findByUsername(LoggedInUser);
+		
+		currentUser.setFirstName(user.getFirstName());
+		currentUser.setLastName(user.getLastName());
+		currentUser.setEmail(user.getEmail());
+		currentUser.setPhoneNo(user.getPhoneNo());
+		currentUser.setUsername(user.getUsername());
+		User updatedUser=userRepository.save(currentUser);
+		return updatedUser;
+	}
+
+	@Override
+	public User getUserByEmail(String email) {
+		
+		return userRepository.findByEmail(email);
+	}
+
+	@Override
+	public User getUserByPhoneNO(String phoneNo) {
+		
+		return null;
+	}
+
+	@Override
+	public User findByPhoneNo(String phoneNo) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

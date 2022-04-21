@@ -17,6 +17,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -36,8 +38,13 @@ import lombok.NoArgsConstructor;
 public class User implements UserDetails{
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	private Integer id;
+	@GeneratedValue(strategy= GenerationType.SEQUENCE, generator = "user_sql")
+	@GenericGenerator(name="user_sql", strategy="com.lhs.Models.CustomeIdGenerator", parameters = {
+			@Parameter(name=CustomeIdGenerator.INCREMENT_PARAM, value="1"),
+			@Parameter(name=CustomeIdGenerator.VALUE_PREFIX_PARAMAETER, value="LHS"),
+			@Parameter(name=CustomeIdGenerator.NUMBER_FORMAT_PARAMETER, value="%05d")
+	})
+	private String id;
 
 	@Column(name="first_name")
 	@NotEmpty(message = "Please provide your first name")

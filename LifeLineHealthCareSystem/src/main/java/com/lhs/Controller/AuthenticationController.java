@@ -1,6 +1,9 @@
 package com.lhs.Controller;
 
 import java.security.Principal;
+import java.util.Random;
+
+import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,17 +15,23 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lhs.Models.User;
+import com.lhs.Payload.Request.ForgotPasswordEmailRequest;
 import com.lhs.Payload.Request.JwtRequest;
 import com.lhs.Payload.Response.JwtResponse;
+import com.lhs.Repository.UserRepository;
 import com.lhs.SecurityConfig.JwtUtil;
+import com.lhs.Service.EmailService;
+import com.lhs.Service.UserService;
 import com.lhs.Service.Impl.UserDetailsServiceImpl;
 
 @RestController
@@ -31,7 +40,7 @@ import com.lhs.Service.Impl.UserDetailsServiceImpl;
 public class AuthenticationController {
 
 	private static final Logger LOG=LoggerFactory.getLogger(AuthenticationController.class);
-	
+
 	@Autowired
 	private AuthenticationManager authenticationManager;// authenticate method will use this to authenticate 
 
@@ -41,6 +50,7 @@ public class AuthenticationController {
 	@Autowired
 	private JwtUtil jwtUtil;
 
+	
 	@PostMapping("/login")
 	public ResponseEntity<?> generateToken(@RequestBody JwtRequest jwtRequest) throws Exception{
 		LOG.info("Enterd into generateToken method");
@@ -60,8 +70,6 @@ public class AuthenticationController {
 		return ResponseEntity.ok(new JwtResponse(token));
 	}
 
-
-
 	private void authenticate(String username, String password) throws Exception {// this method will auth if auth is not sucessfull then is will throegh excep.
 		LOG.info("Ented Into authenticate method");
 		try {
@@ -69,7 +77,7 @@ public class AuthenticationController {
 			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));//takinf uname and pass wich we have set in jwtfilter class
 
 		}catch(DisabledException de) {
-			LOG.debug("User Is Diabled due to this {}",de.getMessage());
+			LOG.debug("User Is Disabled due to this {}",de.getMessage());
 			throw new Exception("USER IS Disabled"+de.getMessage());
 		}catch(BadCredentialsException be) {
 			LOG.debug("Invalid Credentials due to this {}",be.getMessage());
@@ -77,13 +85,13 @@ public class AuthenticationController {
 
 		}
 	}
-	
+
 	//it will give logged in user
 	@GetMapping("/current-user")
 	public User getCurrentUser(Principal principal) {
-		
+
 		return (User)userDetailsService.loadUserByUsername(principal.getName());
-		
 	}
+	
 
 }

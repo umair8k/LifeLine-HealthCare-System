@@ -12,9 +12,6 @@ import lombok.NoArgsConstructor;
 @Component
 public class BuisinessException extends RuntimeException{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	
 	String errorCode;

@@ -20,11 +20,15 @@ public class UserRole {
 	
 	@Id
 	@GeneratedValue(generator = "UserRole_gen",strategy = GenerationType.AUTO)
+	//@GeneratedValue(strategy= GenerationType.SEQUENCE, generator = "user_sql")
 	private Integer userRoleId;
 	
 	//users
 	@ManyToOne(fetch=FetchType.EAGER)
 	private User user;
+	
+	@ManyToOne(fetch=FetchType.EAGER)
+	private Doctors doctors;
 	
 	@ManyToOne
 	private Role role;

@@ -27,9 +27,6 @@ public class UserRole {
 	@ManyToOne(fetch=FetchType.EAGER)
 	private User user;
 	
-	@ManyToOne(fetch=FetchType.EAGER)
-	private Doctors doctors;
-	
 	@ManyToOne
 	private Role role;
 

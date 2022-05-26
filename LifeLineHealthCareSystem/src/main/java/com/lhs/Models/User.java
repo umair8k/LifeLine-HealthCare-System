@@ -13,9 +13,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
@@ -24,18 +23,26 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@ToString
 @Table(name="Users")
 @JsonPropertyOrder({"id","username","firstName","lastName","email","phoneNo","DOB","password","gender","status"})
 public class User implements UserDetails{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy= GenerationType.SEQUENCE, generator = "user_sql")
@@ -44,27 +51,27 @@ public class User implements UserDetails{
 			@Parameter(name=CustomeIdGenerator.VALUE_PREFIX_PARAMAETER, value="LHS"),
 			@Parameter(name=CustomeIdGenerator.NUMBER_FORMAT_PARAMETER, value="%05d")
 	})
-	private String id;
+	private String userId;
 
 	@Column(name="first_name")
-	@NotEmpty(message = "Please provide your first name")
+	//@NotEmpty(message = "Please provide your first name")
 	private String firstName;
 
 	@Column(name="last_name")
-	@NotEmpty(message = "Please provide your last name")
+	//@NotEmpty(message = "Please provide your last name")
 	private String lastName;
 
 
-	@Column(name="username", nullable=false, unique=true)
+	//@Column(name="username", nullable=false, unique=true)
 	@Length( max = 15)
 	private String username;
 
 
 	private String password;
 
-	@Column(name="email", nullable=false, unique=true)
-	@Email(message = "Please provide a valid e-mail")
-	@NotEmpty(message = "Please provide an e-mail")
+	//@Column(name="email", nullable=false, unique=true)
+	//@Email(message = "Please provide a valid e-mail")
+	//@NotEmpty(message = "Please provide an e-mail")
 	private String email;
 
 	private String phoneNo;
@@ -72,16 +79,33 @@ public class User implements UserDetails{
 	private Boolean status=true;
 
 	private String DOB;
-
-
+	
+	
 	@Length( max = 15)
 	private String gender;
+	
+	private String roleName;
 
 
 	//user can have many 
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER,mappedBy="user")
 	@JsonIgnore
 	private Set<UserRole> userRole=new HashSet<>();
+	
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "user" 
+			   ,fetch=FetchType.EAGER)
+	@JsonManagedReference
+	private UserDetail userDetail;
+	
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "user"
+			   ,fetch=FetchType.EAGER)
+	@JsonManagedReference
+	private DoctorDetail doctorDetail;
+	
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "user"
+			   ,fetch=FetchType.EAGER)
+	@JsonManagedReference
+	private NurseDetail nurseDetail;
 
 
 	@Override
@@ -120,8 +144,5 @@ public class User implements UserDetails{
 		// TODO Auto-generated method stub
 		return true;
 	}
-
-
-
 
 }

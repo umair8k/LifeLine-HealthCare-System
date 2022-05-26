@@ -1,12 +1,21 @@
 package com.lhs.Service;
 
-import java.util.Set;
+import java.util.List;
 
-import com.lhs.Models.Doctors;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+
+import com.lhs.Models.DoctorDetail;
 import com.lhs.Models.User;
-import com.lhs.Models.UserRole;
+
 
 public interface AdminService {
 
-	public Doctors addDoctor(Doctors doctor, Set<UserRole> userRole) throws Exception;
+	public List<DoctorDetail> getDoctorBySpecilazation(String specialization);
+
+	List<User> getAllDoctors(String roleName);
+	
+	//public List<User> getAllUser(Integer pageNumber, Integer pageSize, String string);
+
+	Page<User> getAllUser(PageRequest pageRequest, String string);
 }

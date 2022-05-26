@@ -1,10 +1,12 @@
 package com.lhs.Controller;
 
 import java.security.Principal;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,11 +28,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.lhs.Exceptions.BuisinessException;
 import com.lhs.Exceptions.ControllerException;
+import com.lhs.Models.DoctorDetail;
 import com.lhs.Models.Role;
 import com.lhs.Models.User;
 import com.lhs.Models.UserRole;
 import com.lhs.Payload.Request.PasswordRequest;
 import com.lhs.Payload.Request.UpdateUserProfileRequest;
+import com.lhs.Repository.DoctorDetailRepository;
 import com.lhs.Repository.UserRepository;
 import com.lhs.Service.Impl.UserServiceImpl;
 
@@ -51,6 +55,9 @@ public class UserController {
 	@Autowired
 	private UserRepository userRepository;
 
+	@Autowired
+	private DoctorDetailRepository doctorDetailRepository;
+
 	//create User
 	@PostMapping("/signUp")
 	public User createUser(@RequestBody User user) throws Exception {
@@ -64,6 +71,8 @@ public class UserController {
 		role.setRoleId(11);
 		role.setRoleName("USER");
 
+		user.setRoleName(role.getRoleName());
+
 		UserRole userRole=new UserRole();
 		userRole.setRole(role);
 		userRole.setUser(user);
@@ -74,7 +83,7 @@ public class UserController {
 
 	//get All users
 	@GetMapping("/getAllUsers")
-	public List<User> showAllUsers(){
+	public List<User> showAllUsers(@RequestBody String rolename){
 		return this.userService.gellAllUsers();
 	}
 
@@ -92,21 +101,21 @@ public class UserController {
 			return new ResponseEntity<ControllerException>(ce,HttpStatus.BAD_REQUEST);
 		}
 	}
-	
+
 	@GetMapping("/phone/{phoneNo}")
 	public User findByPhoneNO(@RequestParam("phoneNo")String phoneNo){
-	       User user=userRepository.findByPhoneNo(phoneNo);
-	       System.out.println(user);
-	       return user;
-	    }
-	
+		User user=userRepository.findByPhoneNo(phoneNo);
+		System.out.println(user);
+		return user;
+	}
+
 
 	@DeleteMapping("/deleteUser/{id}")
-	public ResponseEntity<Void> deleteUser(@PathVariable("id")Integer id) {
+	public ResponseEntity<Void> deleteUser(@PathVariable("id")String id) {
 		userService.deleteUser(id);
 		return new ResponseEntity<Void>(HttpStatus.ACCEPTED);
 	}
-	
+
 	@RequestMapping(value ="/email/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> getUserByEmail(@RequestParam(value="email",required=false)String email) {
 		try {
@@ -135,10 +144,10 @@ public class UserController {
 		String LoggedInUserUsername=principal.getName();
 		User currentUser=this.userRepository.findByUsername(LoggedInUserUsername);
 
-	     if(pwdRequest.getNewPassword() != null && !pwdRequest.getNewPassword().isEmpty() 
-	    		 && !pwdRequest.getNewPassword().equals("") && !pwdRequest.getNewPassword().contains(" ")) {
-	    	 
-	    	bCryptPasswordEncoder.matches(pwdRequest.getOldPassword(),currentUser.getPassword());//this will check old pwd fiels with current pwd 
+		if(pwdRequest.getNewPassword() != null && !pwdRequest.getNewPassword().isEmpty() 
+				&& !pwdRequest.getNewPassword().equals("") && !pwdRequest.getNewPassword().contains(" ")) {
+
+			bCryptPasswordEncoder.matches(pwdRequest.getOldPassword(),currentUser.getPassword());//this will check old pwd fiels with current pwd 
 
 			currentUser.setPassword(bCryptPasswordEncoder.encode(pwdRequest.getNewPassword()));
 			userRepository.save(currentUser);
@@ -148,11 +157,11 @@ public class UserController {
 			return new ResponseEntity("Somthing went wrong", HttpStatus.BAD_REQUEST); 
 		}
 	}
-	
-	
+
+
 	@PutMapping("/profileInfoUpdate")
 	public ResponseEntity updateProfileInfo(@RequestBody UpdateUserProfileRequest updateRequest, Principal principal) {
-		
+
 		String LoggedInUserUsername=principal.getName();
 		User currentUser=userRepository.findByUsername(LoggedInUserUsername);
 		currentUser.setFirstName(updateRequest.getFirstName());
@@ -160,11 +169,26 @@ public class UserController {
 		currentUser.setEmail(updateRequest.getEmail());
 		currentUser.setUsername(updateRequest.getUsername());
 		currentUser.setPhoneNo(updateRequest.getPhoneNo());
-		
+
 		userRepository.save(currentUser);
-		
+
 		return new ResponseEntity("Success", HttpStatus.OK); 
-		
+
 	}
 
+	@GetMapping("/getBySpe")
+	public ResponseEntity<Set<DoctorDetail>> getBySpecial() {
+		try {
+			Set<DoctorDetail> doctorDetail = doctorDetailRepository.findByspecialization("audiologist").stream()
+					.collect(Collectors.toCollection(() ->
+					new TreeSet	 <> (Comparator.comparing(DoctorDetail::getSpecialization))));
+
+			if (doctorDetail.isEmpty()) {
+				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			}
+			return new ResponseEntity<>(doctorDetail, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 }

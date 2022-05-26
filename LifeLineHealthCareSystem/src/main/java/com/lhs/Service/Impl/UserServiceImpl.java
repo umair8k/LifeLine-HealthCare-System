@@ -4,16 +4,16 @@ import java.security.Principal;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.lhs.Exceptions.BuisinessException;
+import com.lhs.Exceptions.UserAlreadinExistException;
 import com.lhs.Models.User;
 import com.lhs.Models.UserRole;
 import com.lhs.Repository.RoleRepository;
@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
 		User local=this.userRepository.findByUsername(user.getUsername());
 		if(local!=null) {
 			System.out.println("User already exist with this username!!");
-			throw new Exception("user already present with this username");
+			throw new UserAlreadinExistException("user already present with this username","present");
 			//create user
 		}
 		else {
@@ -74,14 +74,18 @@ public class UserServiceImpl implements UserService {
 
 	//deleting user by id
 	@Override
-	public void deleteUser(Integer id) {
+	public void deleteUser(String id) {
 		this.userRepository.deleteById(id);		
 	}
 
+	
 	@Override
-	public List<User> gellAllUsers() {
+	public List<User> gellAllUsers(String roleName) {
 
-		return this.userRepository.findAll();
+		User user=new User();
+		return this.userRepository.findAll().stream()
+				.filter(special -> user.getRoleName().equals(user.getRoleName()))
+				.collect(Collectors.toList());
 	}
 
 	@Override
@@ -124,6 +128,12 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User findByPhoneNo(String phoneNo) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<User> gellAllUsers() {
 		// TODO Auto-generated method stub
 		return null;
 	}

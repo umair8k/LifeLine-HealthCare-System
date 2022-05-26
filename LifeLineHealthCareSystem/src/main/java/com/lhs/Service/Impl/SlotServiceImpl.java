@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.lhs.Models.Slot;
-import com.lhs.Repository.DoctorsRepository;
 import com.lhs.Repository.SlotRepository;
 import com.lhs.Service.SlotService;
 @Service
@@ -14,9 +13,6 @@ public class SlotServiceImpl implements SlotService {
 
 	@Autowired
 	private SlotRepository slotRepository;
-	
-	@Autowired
-	private DoctorsRepository doctorsRepository;
 	
 	@Override
 	public Slot createSlot(Slot slot) {
@@ -32,16 +28,6 @@ public class SlotServiceImpl implements SlotService {
 	
 	}
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	@Override
 	public Slot bookSlot(Slot slot, int slotId) {

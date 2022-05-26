@@ -20,24 +20,24 @@ public class SlotController {
 
 	@Autowired
 	private SlotServiceImpl slotService;
-	
+
 	@Autowired 
 	private SlotRepository slotRepository;
-	
 
-	
-	
-	
+
+
+
+
 	@PostMapping("/createSlot")
 	@PreAuthorize("hasAuthority('DOCTOR')")
 	public Slot createDoctorSlot(@RequestBody Slot slot) {
 		return this.slotService.createSlot(slot);
 	}
-	
-	
+
+
 	@GetMapping("/getSlot")
 	public List<Slot> getAllSlot(){
 		return slotService.getAllAvailableSlot();
-		
+
 	}
 }

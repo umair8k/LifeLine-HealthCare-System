@@ -65,7 +65,7 @@ public class MySecurityConfig extends WebSecurityConfigurerAdapter {
                 .disable()
                 .authorizeRequests()
                 .antMatchers("/auth/login","/user/signUp").permitAll()
-                .antMatchers("/appointment/get", "/appointment/book/**", "/appointment/unbook/**").permitAll()
+                .antMatchers("/appointment/get/**", "/appointment/book/**", "/appointment/unbook/**").permitAll()
                 .antMatchers(HttpMethod.OPTIONS).permitAll()
                 .anyRequest().authenticated()
                 .and()

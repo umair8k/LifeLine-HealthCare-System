@@ -24,10 +24,7 @@ public  class EmailServiceImpl implements EmailService{
        String senderEmail="lifeline.healthcaresys@gmail.com";
        String senderPassword = "LifeLineHealthCareSystem"; 
        
-     
-     
 
-        
         Properties properties = new Properties();
 
        

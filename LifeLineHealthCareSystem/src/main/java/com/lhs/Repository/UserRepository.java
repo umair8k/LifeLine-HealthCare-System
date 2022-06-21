@@ -22,6 +22,8 @@ public interface UserRepository extends JpaRepository<User, String> {
 	
 	public Page<User> findByRoleName(String string, Pageable pageable);
 
+	public User findByUserId(String loggedInUser);
+
 	//@Query("SELECT user FROM User user LEFT JOIN user.roles role WHERE role.id = ?1")
     //List<User> findUserByRole(int role);
 }

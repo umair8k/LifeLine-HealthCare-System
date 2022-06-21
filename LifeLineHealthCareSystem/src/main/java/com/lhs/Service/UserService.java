@@ -19,7 +19,7 @@ public interface UserService {
 	public User getUserByEmail(String email);
 	
 	//deleting user by id
-	public void deleteUser(Integer id);
+	public void deleteUser(String id);
 	
 	//get all users
 	public List<User> gellAllUsers();
@@ -31,6 +31,8 @@ public interface UserService {
 	public User getUserByPhoneNO(String phoneNo);
 
 	public User findByPhoneNo(String phoneNo);
+
+	List<User> gellAllUsers(String roleName);
 	
 
 }

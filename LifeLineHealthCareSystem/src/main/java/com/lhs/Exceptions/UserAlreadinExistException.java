@@ -10,12 +10,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Component
-public class BuisinessException extends RuntimeException{
+public class UserAlreadinExistException extends RuntimeException{
 
 	private static final long serialVersionUID = 1L;
-
+	
 	String errorCode;
 	String errorMessage;
-
+	
 
 }

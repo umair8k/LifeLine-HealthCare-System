@@ -12,10 +12,10 @@ import com.lhs.Service.Impl.SmsSenderImpl;
 @RestController
 @RequestMapping("/sms")
 public class TwilioSmsSenderController {
-	
+
 	@Autowired
 	private SmsSenderImpl smsSender;
-	
+
 	@PostMapping("/send")
 	public void sendSms(@RequestBody SmsRequest smsRequest) {
 		smsSender.sendSms(smsRequest.getPhoneNo(), smsRequest.getMessage());

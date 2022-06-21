@@ -1,9 +1,6 @@
 package com.lhs.Controller;
 
 import java.security.Principal;
-import java.util.Random;
-
-import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,23 +12,17 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lhs.Models.User;
-import com.lhs.Payload.Request.ForgotPasswordEmailRequest;
 import com.lhs.Payload.Request.JwtRequest;
 import com.lhs.Payload.Response.JwtResponse;
-import com.lhs.Repository.UserRepository;
 import com.lhs.SecurityConfig.JwtUtil;
-import com.lhs.Service.EmailService;
-import com.lhs.Service.UserService;
 import com.lhs.Service.Impl.UserDetailsServiceImpl;
 
 @RestController
@@ -50,7 +41,7 @@ public class AuthenticationController {
 	@Autowired
 	private JwtUtil jwtUtil;
 
-	
+
 	@PostMapping("/login")
 	public ResponseEntity<?> generateToken(@RequestBody JwtRequest jwtRequest) throws Exception{
 		LOG.info("Enterd into generateToken method");
@@ -92,6 +83,6 @@ public class AuthenticationController {
 
 		return (User)userDetailsService.loadUserByUsername(principal.getName());
 	}
-	
+
 
 }

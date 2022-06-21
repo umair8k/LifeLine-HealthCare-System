@@ -30,42 +30,42 @@ public class ForgotPasswordEmailController {
 
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
-	
+
 	@Autowired
 	private EmailService emailServcie;
-	
-	
+
+
 	@PostMapping("/forgot-password")
 	public String forgetPassword(@RequestBody ForgotPasswordEmailRequest  forgotPwdReq, HttpSession session){
-		
+
 		Random rondom=new Random();
-		
+
 		int otp=rondom.nextInt(9999);
 		System.out.println("OTP "+otp);
-		
+
 		String subject="Your OTP for resetting LHS Password";
 		String message="Please enter below OTP to reset your LHS account password. <h1> OTP "+otp+"<h1>";
 		String to=forgotPwdReq.getEmail();
 		//User user=userRepository.findByEmail(to);
 
 		boolean flag=emailServcie.sendEmail(subject, message, to);
-	
+
 		if(flag) {
-			
+
 			session.setAttribute("otp", otp);
 			session.setAttribute("email", forgotPwdReq.getEmail());
 			System.out.println("otpppp "+otp);
-			
-			
+
+
 			return "Otp Sent";
 		}
-	     else
+		else
 			return"Please check Email Id !!!";
 	}
-	
+
 	@PostMapping("/verify-otp")
 	public String verifyOtp(@RequestParam(value="otp",required = false)Integer otp, HttpSession session) {
-		
+
 		Integer sessionOtp=(Integer) session.getAttribute("otp");
 		String email=(String) session.getAttribute("email");
 		System.out.println("sessionOTP  "+sessionOtp);
@@ -77,14 +77,14 @@ public class ForgotPasswordEmailController {
 				session.setAttribute("message","User does not exist with this this email");
 			else
 				return "change pwd";
-					}else {
-						
-			
+		}else {
+
+
 		}
 		session.setAttribute("message","Wrong OTP !!!");
 		return "";
 	}
-	
+
 	@PostMapping("/change-forgot-password")
 	public User changeForgotPassword(@RequestBody ForgotPasswordEmailRequest forgotPasswordRequest,HttpSession session) {
 		String email=(String) session.getAttribute("email");

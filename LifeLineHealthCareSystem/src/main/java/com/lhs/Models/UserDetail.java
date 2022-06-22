@@ -34,7 +34,7 @@ public class UserDetail {
 	
 	private String city;
 	
-	private String state;
+	private String state;//4787745478
 	
 	private String country;
 	

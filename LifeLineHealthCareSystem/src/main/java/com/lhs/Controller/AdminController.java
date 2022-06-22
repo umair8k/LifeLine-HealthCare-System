@@ -124,6 +124,7 @@ public class AdminController {
         //}
 		//else {
 			emailService.sendEmail(subject, message, to);
+			
 	//	}
 		return this.userService.createUser(user, userRoleSet);
 

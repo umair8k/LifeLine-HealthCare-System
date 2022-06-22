@@ -23,50 +23,50 @@ import com.lhs.Service.UserService;
 @RestController
 @RequestMapping("/smsForgot")
 public class ForgotPasswordSmsController {
-	
-	
+
+
 	@Autowired
 	private UserRepository userRepository;
 
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
-	
+
 	@Autowired
 	private SmsSender smsSender;
-	
+
 	@Autowired
 	private UserService userService;
-	
-	
+
+
 	@PostMapping("/forgot-password")
 	public String forgetPassword(@RequestBody ForgotPasswordSmsRequest forgotPwdReq, HttpSession session){
-		
+
 		Random rondom=new Random();
-		
+
 		int otp=rondom.nextInt(9999);
 		System.out.println("OTP "+otp);
-		
+
 		String message="Please enter below OTP to reset your LHS account password. <h1> OTP "+otp+"<h1>";
 		String to=forgotPwdReq.getPhoneNo();
 		//User user=userRepository.findByEmail(to);
 
 		boolean flag=smsSender.sendSms(to, message);
 		if(flag) {
-			
+
 			session.setAttribute("otp", otp);
 			session.setAttribute("phoneNo", forgotPwdReq.getPhoneNo());
 			System.out.println("otpppp "+otp);
-			
-			
+
+
 			return "Otp Sent";
 		}
-	     else
+		else
 			return"Please check Email Id !!!";
 	}
-	
+
 	@PostMapping("/verify-otp")
 	public String verifyOtp(@RequestParam(value="otp",required = false)Integer otp, HttpSession session) {
-		
+
 		Integer sessionOtp=(Integer) session.getAttribute("otp");
 		String phoneNo=(String) session.getAttribute("phoneNo");
 		System.out.println("sessionOtp  "+sessionOtp);
@@ -78,13 +78,13 @@ public class ForgotPasswordSmsController {
 				session.setAttribute("message","User does not exist with this this email");
 			else
 				return "change pwd";
-					}else {
+		}else {
 
 		}
 		session.setAttribute("message","Wrong OTP !!!");
 		return "";
 	}
-	
+
 	@PostMapping("/change-forgot-password")
 	public ResponseEntity<User> changeForgotPassword(@RequestBody ForgotPasswordSmsRequest forgotPwdReq,HttpSession session) {
 		String phoneNo=(String) session.getAttribute("phoneNo");
@@ -96,10 +96,10 @@ public class ForgotPasswordSmsController {
 		userRepository.save(user);
 		if(user==null)
 			return new ResponseEntity("User not found",HttpStatus.BAD_REQUEST);
-			else {
-		System.out.println(user);
-		return  new ResponseEntity(user,HttpStatus.OK);	
-			}
+		else {
+			System.out.println(user);
+			return  new ResponseEntity(user,HttpStatus.OK);	
+		}
 	}
 
 }

@@ -20,6 +20,7 @@ public class UserRole {
 	
 	@Id
 	@GeneratedValue(generator = "UserRole_gen",strategy = GenerationType.AUTO)
+	//@GeneratedValue(strategy= GenerationType.SEQUENCE, generator = "user_sql")
 	private Integer userRoleId;
 	
 	//users

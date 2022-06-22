@@ -21,11 +21,10 @@ public  class EmailServiceImpl implements EmailService{
     public boolean sendEmail(String subject, String message, String to)
     {
         boolean flag = false; 
-        String senderEmail="lifeline.healthcaresys@gmail.com";
-        String senderPassword = "LifeLineHealthCareSystem"; 
-     
+       String senderEmail="lifeline.healthcaresys@gmail.com";
+       String senderPassword = "LifeLineHealthCareSystem"; 
+       
 
-        
         Properties properties = new Properties();
 
        
